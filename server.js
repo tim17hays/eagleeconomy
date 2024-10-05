@@ -1,7 +1,7 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
-const findBestExchange = require('./compareOrders');
+const findBestExchange = require('./compareOrders'); // Import the updated logic
 const app = express();
 const port = 3000;
 
@@ -12,18 +12,6 @@ const db = new sqlite3.Database('./database.db', (err) => {
     console.log('Connected to the SQLite database.');
   }
 });
-
-// Create "exchange_orders" table if it doesn't exist, including a timestamp column
-db.run(`
-  CREATE TABLE IF NOT EXISTS exchange_orders (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_type TEXT,
-    exchange_rate REAL,
-    amount_ebucks REAL,
-    location TEXT,
-    timestamp INTEGER
-  )
-`);
 
 // Middleware to parse JSON data
 app.use(bodyParser.json());
@@ -77,23 +65,22 @@ app.post('/submit-order', (req, res) => {
             return;
           }
 
-          // Determine the type of counterpart orders to fetch
-          const counterpartType = newOrder.order_type === 'buy' ? 'sell' : 'buy';
-
-          // Fetch all counterpart orders (opposite type) from the last 30 minutes
+          // Calculate the timestamp for 30 minutes ago
           const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
+
+          // Fetch all existing orders except the newly inserted one and within the last 30 minutes
           db.all(
-            `SELECT * FROM exchange_orders WHERE order_type = ? AND id != ? AND timestamp >= ?`,
-            [counterpartType, newOrderId, thirtyMinutesAgo],
-            (err, counterpartOrders) => {
+            `SELECT * FROM exchange_orders WHERE id != ? AND timestamp >= ?`,
+            [newOrderId, thirtyMinutesAgo],
+            (err, existingOrders) => {
               if (err) {
                 console.error(err.message);
-                res.status(500).send({ error: 'Failed to retrieve counterpart orders.' });
+                res.status(500).send({ error: 'Failed to retrieve other orders.' });
                 return;
               }
 
               // Use the findBestExchange function to find the best match for the new order
-              const bestMatch = findBestExchange(newOrder, counterpartOrders);
+              const bestMatch = findBestExchange(newOrder, existingOrders);
 
               // Send the best match back to the front end
               if (bestMatch) {

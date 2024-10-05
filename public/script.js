@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Add the newly submitted order to the "All Orders" list
             const orderItem = document.createElement('p');
-            orderItem.textContent = `order.order_type.toUpperCase()} at ${order.location.toUpperCase()}: $${order.exchange_rate.toFixed(2)} each for ${order.amount_ebucks} Eagle Bucks`;
+            orderItem.textContent = `${orderType.toUpperCase()} at ${location}: $${usdValue} for ${ebucksValue} Eagle Bucks, $${(usdValue / ebucksValue).toFixed(2)} per Eagle Buck`;
             orderList.insertBefore(orderItem, orderList.firstChild); // Add the new order to the top of the list
           }
         })
