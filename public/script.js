@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.bestMatch) {
               const { buy_order, sell_order } = data.bestMatch;
               bestMatchDiv.innerHTML = `
-                <p>Best Exchange: BUY at ${buy_order.location}</p>
-                <p>Exchange Rate: $${buy_order.exchange_rate.toFixed(2)} each for ${buy_order.amount_ebucks} Eagle Bucks</p>
+               <p>Best Exchange: BUY at ${buy_order.location}</p>
+               <p>Exchange Rate: $${buy_order.exchange_rate.toFixed(2)} each for ${buy_order.amount_ebucks} Eagle Bucks</p>
                <p>Matched With:</p>
                <p>SELL at ${sell_order.location}</p>
                <p>Exchange Rate: $${sell_order.exchange_rate.toFixed(2)} each for ${sell_order.amount_ebucks} Eagle Bucks</p>
