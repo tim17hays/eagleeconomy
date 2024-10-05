@@ -1,6 +1,7 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
+const findBestExchange = require('./compareOrders');
 const app = express();
 const port = 3000;
 
@@ -12,14 +13,15 @@ const db = new sqlite3.Database('./database.db', (err) => {
   }
 });
 
-// Create "exchange_orders" table if it doesn't exist
+// Create "exchange_orders" table if it doesn't exist, including a timestamp column
 db.run(`
   CREATE TABLE IF NOT EXISTS exchange_orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_type TEXT,
     exchange_rate REAL,
     amount_ebucks REAL,
-    location TEXT
+    location TEXT,
+    timestamp INTEGER
   )
 `);
 
@@ -39,17 +41,39 @@ app.post('/submit-order', (req, res) => {
 
   // Calculate the exchange rate (price per Eagle Buck)
   const exchangeRate = parseFloat(usd) / parseFloat(ebucks);
+  const timestamp = Date.now(); // Get the current time in milliseconds
 
   // Insert the relevant data into the exchange_orders table
   db.run(
-    `INSERT INTO exchange_orders (order_type, exchange_rate, amount_ebucks, location) VALUES (?, ?, ?, ?)`,
-    [orderType, exchangeRate, ebucks, location],
+    `INSERT INTO exchange_orders (order_type, exchange_rate, amount_ebucks, location, timestamp) VALUES (?, ?, ?, ?, ?)`,
+    [orderType, exchangeRate, ebucks, location, timestamp],
     function (err) {
       if (err) {
         console.error(err.message);
         res.status(500).send({ error: 'Failed to insert order into database.' });
       } else {
-        res.status(200).send({ success: 'Order successfully saved.' });
+        // Fetch all orders from the database to find the best match
+        db.all(`SELECT * FROM exchange_orders`, (err, orders) => {
+          if (err) {
+            console.error(err.message);
+            res.status(500).send({ error: 'Failed to retrieve orders.' });
+            return;
+          }
+
+          // Use the findBestExchange function to find the best match from the last 30 minutes
+          const currentTime = Date.now();
+          const thirtyMinutesAgo = currentTime - (30 * 60 * 1000);
+          const recentOrders = orders.filter(order => order.timestamp >= thirtyMinutesAgo);
+
+          const bestMatch = findBestExchange(recentOrders);
+
+          // Send the best match back to the front end
+          if (bestMatch) {
+            res.status(200).send({ success: true, bestMatch });
+          } else {
+            res.status(200).send({ success: true, message: 'No suitable match found.' });
+          }
+        });
       }
     }
   );
