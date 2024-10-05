@@ -1,48 +1,95 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eagle Economy</title>
-    <script src="script.js" defer></script>
+    <title>College Dining Dollar Exchange</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navigation Bar Styling */
+        .navbar {
+            background-color: #4CAF50;
+            padding: 1em;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar select {
+            font-size: 1em;
+            padding: 0.5em;
+            border-radius: 5px;
+            border: none;
+            background-color: #f0f0f0;
+        }
+
+        .navbar button {
+            padding: 0.5em 1em;
+            margin-left: 1em;
+            font-size: 1em;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .navbar button:hover {
+            background-color: #555;
+        }
+
+        /* Main Content Area */
+        .content {
+            padding: 2em;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 1em;
+        }
+    </style>
 </head>
+
 <body>
-    <form id="inputform">
-        <h4>Order Type:</h4>
-        <label>
-          <input type="radio" name="order_type" value="buy"/> Buy
-        </label>
-        <label>
-          <input type="radio" name="order_type" value="sell"/> Sell
-        </label>
 
-        <h4>Location:</h4>
-        <label>
-          <input type="radio" name="location" value="lower"/> Lower
-        </label>
-        <label>
-          <input type="radio" name="location" value="upper"/> Upper
-        </label>
-          <input type="radio" name="location" value="on campus"/> On Campus
-        </label>
-      
-        <h4>Amount:</h4>
-        <label for="usd">USD:</label>
-        <input type="number" id="usd" name="usd" min="0" step="0.01"/>
-      
-        <label for="ebucks">Eagle Bucks:</label>
-        <input type="number" id="ebucks" name="ebucks" min="0" step="0.01"/>
-        <br><br>
-        <input type="submit" value="Submit Order"/>
-      </form>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <label for="location">Select a Location:</label>
+        <select id="location">
+            <option value="lower.html">Lower</option>
+            <option value="mac.html">Mac</option>
+            <option value="hillside.html">Hillside</option>
+        </select>
+        <button onclick="goToLocation()">Go</button>
+    </div>
 
-    <h4>Best Match:</h4>
-    <div id="bestMatch"></div>
+    <!-- Main Content -->
+    <div class="content">
+        <h1>Welcome to the Dining Dollar Exchange</h1>
+        <p>Use the menu above to select your dining location and start trading or buying dining dollars.</p>
+    </div>
 
-    <h4>All Orders:</h4>
-    <div id="orderList"></div>
-
+    <script>
+        // JavaScript function to handle redirection based on selection
+        function goToLocation() {
+            const location = document.getElementById("location").value;
+            window.location.href = location;
+        }
+    </script>
 
 </body>
+
 </html>
