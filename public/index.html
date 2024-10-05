@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eagle Economy</title>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <form id="inputform">
+        <p>Order Type:</p>
+        <label>
+          <input type="radio" name="order_type" value="buy"/> Buy
+        </label>
+        <label>
+          <input type="radio" name="order_type" value="sell"/> Sell
+        </label>
+
+        <p>Location:</p>
+        <label>
+          <input type="radio" name="location" value="lower"/> Lower
+        </label>
+        <label>
+          <input type="radio" name="location" value="upper"/> Upper
+        </label>
+          <input type="radio" name="location" value="on campus"/> On Campus
+        </label>
+      
+        <p>Amount:</p>
+        <label for="usd">USD:</label>
+        <input type="number" id="usd" name="usd" min="0" step="0.01"/>
+      
+        <label for="ebucks">Eagle Bucks:</label>
+        <input type="number" id="ebucks" name="ebucks" min="0" step="0.01"/>
+        <br><br>
+        <input type="submit" value="Submit Order"/>
+      </form>
+
+    <p>Orders</p>
+    <div id="orderList"></div>
+
+</body>
+</html>
